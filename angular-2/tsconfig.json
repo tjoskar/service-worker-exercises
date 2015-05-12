@@ -20,6 +20,7 @@
         "./gif.service.ts",
         "./http.ts",
         "./main.ts",
-        "./typings/angular2/angular2.d.ts"
+        "./typings/angular2/angular2.d.ts",
+        "./typings/es6-promise/es6-promise.d.ts"
     ]
 }
