@@ -1,0 +1,36 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>Gifs</title>
+    <meta name="description" content="">
+    <style>
+        body {
+          margin: 0;
+        }
+        #gifs > img {
+          display: block;
+          float: left;
+          width: 50vw;
+          height: 50vh;
+          object-fit: cover;
+        }
+    </style>
+  </head>
+  <body>
+
+    <div ng-view></div>
+
+    <script src="/vendor/angular.min.js"></script>
+    <script src="/vendor/angular-route.js"></script>
+
+    <script src="/src/gif/init.js"></script>
+    <script src="/src/gif/gif.repository.js"></script>
+    <script src="/src/gif/gif.service.js"></script>
+    <script src="/src/gif/gif.controller.js"></script>
+
+
+    <script src="/src/app.js"></script>
+
+  </body>
+</html>

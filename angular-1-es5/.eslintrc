@@ -1,0 +1,15 @@
+{
+    "parser": "babel-eslint",
+    "rules": {
+        "quotes": [2, "single", "avoid-escape"],
+        "no-use-before-define": [2, "nofunc"]
+    },
+    "env": {
+        "node": true,
+        "browser": true
+    },
+    "globals": {
+        "angular": true,
+        "_": true
+    }
+}
