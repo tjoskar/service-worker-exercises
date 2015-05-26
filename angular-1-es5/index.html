@@ -4,18 +4,7 @@
     <meta charset="utf-8">
     <title>Gifs</title>
     <meta name="description" content="">
-    <style>
-        body {
-          margin: 0;
-        }
-        #gifs > img {
-          display: block;
-          float: left;
-          width: 50vw;
-          height: 50vh;
-          object-fit: cover;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/src/style/main.css">
   </head>
   <body>
 
@@ -29,8 +18,54 @@
     <script src="/src/gif/gif.service.js"></script>
     <script src="/src/gif/gif.controller.js"></script>
 
-
     <script src="/src/app.js"></script>
+
+    <script>
+      if ('serviceWorker' in window.navigator) {
+        var swRegistration;
+        // Register
+        window.navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) {
+            swRegistration = reg;
+            console.log('◕‿◕', reg);
+          }, function(err) {
+            console.log('ಠ_ಠ', err);
+          });
+
+        window.requestNotificationPermission = function() {
+          if (!window.Notification) {
+            console.log('Ooops Notifications Not Supported');
+            return;
+          }
+          window.Notification.requestPermission(function(result) {
+            console.log('We request and get: ', result);
+            if (result !== 'granted') {
+              console.log('Permission wasn\'t granted. Allow a retry.');
+              return;
+            }
+          });
+        };
+          
+        window.requestPushPermission = function() {
+          window.navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+            serviceWorkerRegistration.pushManager.subscribe()
+              .then(function(pushSubscription) {
+                console.log('We got: (save it) ', pushSubscription);
+              })
+              .catch(function(e) {
+                console.error('Unable to register for push', e);
+              });
+            });
+        };
+
+        window.unregister = function() {
+          swRegistration.unregister().then(function(success) {
+            console.log(success ? 'You have unregister the SW' : 'It refuse to die');
+          });
+        };
+
+      }
+    </script>
 
   </body>
 </html>

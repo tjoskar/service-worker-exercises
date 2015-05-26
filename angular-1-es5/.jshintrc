@@ -1,0 +1,25 @@
+{
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "latedef": "nofunc",
+  "newcap": true,
+  "noarg": true,
+  "nonbsp": true,
+  "quotmark": "single",
+  "sub": true,
+  "undef": true,
+  "unused": true,
+  "boss": false,
+  "eqnull": true,
+  "node": true,
+  "esnext": true,
+  "globals": {
+    "angular": true,
+    "window": true,
+    "document": true,
+    "_": true,
+    "console": true
+  }
+}

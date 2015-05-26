@@ -10,6 +10,8 @@
     },
     "globals": {
         "angular": true,
+        "window": true,
+        "console": true,
         "_": true
     }
 }
