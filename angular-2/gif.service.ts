@@ -7,7 +7,7 @@ class GifService {
     this.url = 'http://www.reddit.com/r/perfectloops/top.json?sort=top&t=week';
   }
 
-  get() {
+  get() : Promise<Array<any>> {
     return http.get(this.url)
       .then(data => JSON.parse(data))
       .then(data => data.data.children)
