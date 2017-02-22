@@ -3,115 +3,13 @@
   <head>
     <title>Happy news</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            margin: 0;
-        }
-        header {
-            background-color: rgba(76, 220, 100, 0.9);
-            width: 100%;
-            padding: 10px;
-            position: fixed;
-        }
-        h1, h2 {
-            margin: 0;
-        }
-        h1 {
-            font-size: 3rem;
-        }
-        h2 {
-            font-size: 1.3rem;
-        }
-        h1 a {
-            text-decoration: none;
-            color: black;
-        }
-        p {
-            margin: 0;
-        }
-        img {
-            height: 100px;
-        }
-        section {
-            display: flex;
-            padding-bottom: 10px;
-        }
-        article {
-            margin-left: 10px;
-        }
-        .content {
-            padding: 100px 10px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <header>
         <h1><a href="/">Happy news</a></h1>
     </header>
     <div class="content"></div>
-
-    <script>
-        const routes = [
-            { path: /^\//, view: newsList },
-            { path: /^news\/(\d+)/, view: newsDetail }
-        ];
-
-        function render(htmlString) {
-            const newsNode = document.querySelector('.content');
-            newsNode.innerHTML = htmlString;
-        }
-
-        async function router() {
-            const url = location.hash.slice(1) || '/';
-            const route = routes.find(r => r.path.test(url));
-            if (!route) {
-                return render(notFound());
-            }
-
-            const match = route.path.exec(url);
-            render(loading());
-            render(await route.view(...match));
-        }
-
-        ['hashchange', 'load'].forEach(e => window.addEventListener(e, router));
-
-        function createNewsNode(news) {
-            return `
-                <section>
-                    <img src="${news.image}">
-                    <article>
-                        <a href="#news/${news.id}"><h2>${news.title}</h2></a>
-                        <p>${news.text}</p>
-                    </article>
-                </section>
-            `;
-        }
-
-        async function fetchNews() {
-            const response = await fetch('http://localhost:3000');
-            return await response.json();
-        }
-        async function detailNews(id) {
-            const response = await fetch(`http://localhost:3000/${id}`);
-            return await response.json();
-        }
-        async function newsList() {
-            const news = await fetchNews();
-            return news.map(createNewsNode).join('');
-        }
-        async function newsDetail(_, id) {
-            const news = await detailNews(id);
-            return createNewsNode(news);
-        }
-
-        function notFound() {
-            return '<p>404</p>';
-        }
-        function loading() {
-            return '<p>Loading... 🚀</p>';
-        }
-
-    </script>
+    <script type="text/javascript" src="index.js"></script>
   </body>
 </html>

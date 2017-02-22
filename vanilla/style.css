@@ -1,0 +1,39 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+}
+header {
+    background-color: rgba(76, 220, 100, 0.9);
+    width: 100%;
+    padding: 10px;
+    position: fixed;
+}
+h1, h2 {
+    margin: 0;
+}
+h1 {
+    font-size: 3rem;
+}
+h2 {
+    font-size: 1.3rem;
+}
+h1 a {
+    text-decoration: none;
+    color: black;
+}
+p {
+    margin: 0;
+}
+img {
+    height: 100px;
+}
+section {
+    display: flex;
+    padding-bottom: 10px;
+}
+article {
+    margin-left: 10px;
+}
+.content {
+    padding: 100px 10px;
+}
