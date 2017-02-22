@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Happy news</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+        }
+        header {
+            background-color: rgba(76, 220, 100, 0.9);
+            width: 100%;
+            padding: 10px;
+            position: fixed;
+        }
+        h1, h2 {
+            margin: 0;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+        }
+        p {
+            margin: 0;
+        }
+        img {
+            height: 100px;
+        }
+        section {
+            display: flex;
+            padding-bottom: 10px;
+        }
+        article {
+            margin-left: 10px;
+        }
+        .news {
+            padding: 100px 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+        <h1>Happy news</h1>
+    </header>
+    <div class="news">
+        <section>
+            <div class="image-wrapper">
+                <img src="https://i.redditmedia.com/nphn_kQRhHlxhi4P8aqP020tZ_SG2QKKGIKKI0PXSwU.jpg?s=95e1fbd2ec056a4eeefe5467baa296c0">
+            </div>
+            <article>
+                <h2>Some news</h2>
+                <p>This approach may require a grace period to be established as a wider guideline as it’s significantly different from what web developers are typically taught. For consistency and simplicity reasons it’s best served omitting all optional tags, not just a selection.</p>
+            </article>
+        </section>
+    </div>
+
+    <script>
+        function render(htmlString) {
+            const newsNode = document.querySelector('.news');
+            newsNode.innerHTML = htmlString;
+        }
+        function createNewsNode(news) {
+            return `
+                <section>
+                    <img src="${news.image}">
+                    <article>
+                        <h2>${news.title}</h2>
+                        <p>${news.text}</p>
+                    </article>
+                </section>
+            `;
+        }
+        function fetchNews() {
+            return fetch('http://localhost:3000');
+        }
+        async function renderNews() {
+            const response = await fetchNews();
+            const news = await response.json();
+            render(news.map(createNewsNode).join(''));
+        }
+        renderNews();
+    </script>
+  </body>
+</html>
