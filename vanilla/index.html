@@ -11,5 +11,22 @@
     </header>
     <div class="content"></div>
     <script type="text/javascript" src="index.js"></script>
+    <script>
+      function registerServiceWorker(path) {
+        return window.navigator.serviceWorker
+          .register(path)
+          .then(reg => {
+            console.log('We are live 🚀', reg);
+            return reg;
+          })
+          .catch(err => {
+            console.log('ಠ_ಠ', err);
+            throw err;
+          });
+      }
+      if ('serviceWorker' in window.navigator) {
+        const registration = registerServiceWorker('/sw.js');
+      }
+    </script>
   </body>
 </html>
