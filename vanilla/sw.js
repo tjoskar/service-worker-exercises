@@ -83,15 +83,8 @@ function cacheAndUpdate(event, cacheName) {
  */
 async function networkFallbackOnCache(request, cacheName) {
     console.log('networkFallbackOnCache: ', request.url);
-    const cache = await caches.open(cacheName);
-    const cacheResponse = await cache.match(request.clone());
-
-    return fetch(request.clone())
-        .then(networkResponse => {
-            cache.put(request, networkResponse.clone());
-            return networkResponse;
-        })
-        .catch(() => cacheResponse);
+    return updateCache(request, cacheName)
+        .catch(() => fromCache(request, cacheName));
 }
 
 /**
