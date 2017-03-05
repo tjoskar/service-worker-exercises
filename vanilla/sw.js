@@ -32,28 +32,46 @@ self.addEventListener('activate', event => {
 });
 
 
-self.addEventListener('fetch', event => {
-    const requestURL = new URL(event.request.url);
-    return event.respondWith(fetchResponse(event, requestURL));
-});
+self.addEventListener('fetch', fetchResponse);
 
-function fetchResponse(event, url) {
+function fetchResponse(event) {
+    const url = new URL(event.request.url);
+
     if (url.hostname === 'i.redditmedia.com') {
         console.log('Trying to fetch images from reddit!');
-        return cacheFallbackOnNetwork(event.request, imageCacheName);
+        event.respondWith(cacheFallbackOnNetwork(event.request, imageCacheName));
     } else if(url.href === 'http://localhost:3000/') {
         console.log('Fetching API');
-        return networkFallbackOnCache(event.request, apiCacheName);
+        cacheAndUpdate(event, apiCacheName);
     } else if ([location.hostname, 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(url.hostname)) {
         console.log('Fetching from this host');
-        return cacheFallbackOnNetwork(event.request, staticFilesCache);
+        event.respondWith(cacheFallbackOnNetwork(event.request, staticFilesCache));
     } else if (url.hostname === 'lorempixel.com') {
         console.log('Fetching from lorempixel.com');
-        return fetch(event.request).catch(() => caches.match('/offline.gif'));
+        event.respondWith(fetch(event.request).catch(() => caches.match('/offline.gif')));
     } else {
         console.log('Unknown data, go for the internet', event.request.url);
-        return fetch(event.request);
+        event.respondWith(fetch(event.request));
     }
+}
+
+function cacheAndUpdate(event, cacheName) {
+    const cacheResponse = fromCache(event.request, cacheName);
+    const updatedResponse = updateCache(event.request, cacheName);
+    const cacheOrNetwork = cacheResponse.then(response => response || updatedResponse);
+    const refreshResponse = cacheResponse
+        .then(response => {
+            if (response) {
+                return updatedResponse;
+            }
+        })
+        .then(response => {
+            if (response) {
+                return postMessage(response, 'refresh-news-list');
+            }
+        });
+    event.respondWith(cacheOrNetwork);
+    event.waitUntil(refreshResponse);
 }
 
 /**
@@ -84,13 +102,8 @@ async function networkFallbackOnCache(request, cacheName) {
  */
 async function cacheFallbackOnNetwork(request, cacheName) {
     console.log('cacheFallbackOnNetwork: ', request.url);
-    const cache = await caches.open(cacheName);
-    const response = await cache.match(request.clone());
-    const fetchPromise = fetch(request.clone())
-        .then(networkResponse => {
-            cache.put(request, networkResponse.clone());
-            return networkResponse;
-        })
+    const cacheResponse = await fromCache(request, cacheName);
+    const fetchPromise = updateCache(request, cacheName)
         .catch(() => {
             if (/\.(png|jpg|jpeg|gif)$/.test(request.url)) {
                 console.log('offline.gif', request.url);
@@ -98,5 +111,25 @@ async function cacheFallbackOnNetwork(request, cacheName) {
             }
             return Promise.reject('Can not fetch and update the requested item in cache :(');
         });
-    return response || fetchPromise;
+    return cacheResponse || fetchPromise;
+}
+
+async function postMessage(response, type) {
+    const message = JSON.stringify({ type, url: response.url });
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => client.postMessage(message));
+}
+
+async function fromCache(request, cacheName) {
+    const cache = await caches.open(cacheName);
+    return cache.match(request);
+}
+
+async function updateCache(request, cacheName) {
+    const cache = await caches.open(cacheName);
+    const response = await fetch(request);
+    if (response.ok) {
+        await cache.put(request, response.clone());
+    }
+    return response;
 }

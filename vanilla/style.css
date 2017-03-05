@@ -1,9 +1,13 @@
+:root {
+  --main-color: rgba(76, 220, 100, 0.9);
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
 }
 header {
-    background-color: rgba(76, 220, 100, 0.9);
+    background-color: var(--main-color);
     width: 100%;
     padding: 10px;
     position: fixed;
@@ -36,4 +40,16 @@ article {
 }
 .content {
     padding: 100px 10px;
+}
+#confirm div {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    background-color: var(--main-color);
+}
+#confirm .clickable {
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 10px;
 }
