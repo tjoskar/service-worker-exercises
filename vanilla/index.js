@@ -4,6 +4,7 @@ const routes = [
     { path: /^\//, view: newsList },
     { path: /^news\/(\d+)/, view: newsDetail }
 ];
+let currentNewsList = [];
 
 async function router() {
     const url = currentRoute();
@@ -52,6 +53,7 @@ function confirmUpdate(msg) {
 }
 
 function clearConfirmDialog() {
+    // This may cause memory leaks in older browsers due to the event listeners
     confirmContainer.innerHTML = '';
 }
 
@@ -67,13 +69,22 @@ function createNewsNode(news) {
     `;
 }
 
+function isSameNewsList(a, b) {
+    if (a.length !== b.length) {
+        return false;
+    }
+    return a.every((article, i) => article.id === b[i].id);
+}
+
 async function fetchNews() {
-    const response = await fetch('http://localhost:3000');
-    return await response.json();
+    const response = await fetch('https://happy-news-hcooumiahc.now.sh');
+    const newsList = await response.json();
+    currentNewsList = newsList;
+    return newsList;
 }
 
 async function detailNews(id) {
-    const response = await fetch(`http://localhost:3000/${id}`);
+    const response = await fetch(`https://happy-news-hcooumiahc.now.sh/${id}`);
     return await response.json();
 }
 
@@ -83,8 +94,33 @@ async function newsList() {
 }
 
 async function newsDetail(_, id) {
-    const news = await detailNews(id);
-    return createNewsNode(news);
+    try {
+        const news = await detailNews(id);
+        return createNewsNode(news);
+    } catch (error) {
+        if (await registerSync('news-article-' + id)) {
+            return 'Could not fetch the article, I will try to download the article in the background and notify you when the article is ready 🎉';
+        } else {
+            return 'Could not fetch the article :/';
+        }
+    }
+}
+
+async function registerSync(tag) {
+    const hasNotificationPermission = await requestNotificationPermission();
+    if (!hasNotificationPermission) {
+        return false;
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+    await reg.sync.register(tag);
+    return true;
+}
+
+function requestNotificationPermission() {
+    return new Promise(resolve => {
+        Notification.requestPermission(permission => resolve(permission === 'granted'));
+    });
 }
 
 function notFound() {
@@ -109,8 +145,12 @@ async function fromCache(request, cacheName) {
 async function messageHandler({ type, url }) {
     if (type === 'refresh-news-list' && currentRoute() === '/') {
         const cachedData = await fromCache(url, apiCacheName);
-        if (cachedData && cachedData.ok && await confirmUpdate('Sorry to bother you but do you want the latest news?')) {
-            const newsList = await cachedData.json();
+        if (!cachedData || !cachedData.ok) {
+            return;
+        }
+        const newsList = await cachedData.json();
+        const isNewList = !isSameNewsList(currentNewsList, newsList);
+        if (isNewList && await confirmUpdate('Sorry to bother you but do you want the latest news?')) {
             render(newsList.map(createNewsNode).join(''));
         }
     }

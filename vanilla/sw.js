@@ -10,7 +10,7 @@ const staticFiles = [
 ];
 
 self.addEventListener('install', event => {
-    console.log('Install');
+    console.log('Install!');
     event.waitUntil(
         caches.open(staticFilesCache).then(cache => {
             return cache.addAll(staticFiles);
@@ -31,29 +31,62 @@ self.addEventListener('activate', event => {
         )
 });
 
-
-self.addEventListener('fetch', fetchResponse);
-
-function fetchResponse(event) {
+self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
     if (url.hostname === 'i.redditmedia.com') {
-        console.log('Trying to fetch images from reddit!');
         event.respondWith(cacheFallbackOnNetwork(event.request, imageCacheName));
-    } else if(url.href === 'http://localhost:3000/') {
-        console.log('Fetching API');
+    } else if(url.hostname === 'happy-news-hcooumiahc.now.sh') {
         cacheAndUpdate(event, apiCacheName);
     } else if ([location.hostname, 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(url.hostname)) {
-        console.log('Fetching from this host');
         event.respondWith(cacheFallbackOnNetwork(event.request, staticFilesCache));
     } else if (url.hostname === 'lorempixel.com') {
-        console.log('Fetching from lorempixel.com');
         event.respondWith(fetch(event.request).catch(() => caches.match('/offline.gif')));
     } else {
         console.log('Unknown data, go for the internet', event.request.url);
         event.respondWith(fetch(event.request));
     }
-}
+});
+
+self.addEventListener('sync', event => {
+    console.log('sync event: ', event.tag);
+    // Misuse of sync tags. Should use a queue instead
+    if (event.tag.startsWith('news-article-')) {
+        const articleId = Number(event.tag.substr(13));
+        if (isNaN(articleId)) {
+            return true;
+        }
+        const updateAndShowNotification = async () => {
+            await updateCache(`${location.origin}/${articleId}`);
+            await registration.showNotification('The article is ready for you', {
+                icon: 'icon.png',
+                body: 'View the article',
+                data: articleId
+            });
+
+        }
+        event.waitUntil(updateAndShowNotification());
+    }
+});
+
+self.addEventListener('push', function(event) {
+    console.log(`Push event: "${event.data.text()}"`);
+
+    const title = 'New happy news!';
+    const options = {
+        body: 'Nice!',
+        icon: 'icon.png',
+        data: event.data.text()
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', function(event) {
+    // Assuming only one type of notification right now
+    event.notification.close();
+    clients.openWindow(`${location.origin}/#news/${event.notification.data}`);
+});
 
 function cacheAndUpdate(event, cacheName) {
     const cacheResponse = fromCache(event.request, cacheName);
@@ -74,32 +107,17 @@ function cacheAndUpdate(event, cacheName) {
     event.waitUntil(refreshResponse);
 }
 
-/**
- * Send request -> save in cache -> reply with response
- * If network fail => reply with cache value
- * @param {Request} request   request from event
- * @param {String} cacheName cache name
- * @return {Promise}
- */
 async function networkFallbackOnCache(request, cacheName) {
-    console.log('networkFallbackOnCache: ', request.url);
     return updateCache(request, cacheName)
         .catch(() => fromCache(request, cacheName));
 }
 
-/**
- * Check if we have the request in cache, if we do: response, else make a network request and update the cache.
- * @param  {Request} request
- * @param  {String} cacheName
- * @return {Promise}
- */
 async function cacheFallbackOnNetwork(request, cacheName) {
-    console.log('cacheFallbackOnNetwork: ', request.url);
     const cacheResponse = await fromCache(request, cacheName);
     const fetchPromise = updateCache(request, cacheName)
         .catch(() => {
             if (/\.(png|jpg|jpeg|gif)$/.test(request.url)) {
-                console.log('offline.gif', request.url);
+                console.log('Replacing the request with offline.gif', request.url);
                 return caches.match('/offline.gif');
             }
             return Promise.reject('Can not fetch and update the requested item in cache :(');
