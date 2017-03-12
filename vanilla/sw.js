@@ -139,7 +139,7 @@ async function fromCache(request, cacheName) {
 async function updateCache(request, cacheName) {
     const cache = await caches.open(cacheName);
     const response = await fetch(request);
-    if (response.ok) {
+    if (response.ok || response.type === 'opaque') {
         await cache.put(request, response.clone());
     }
     return response;
