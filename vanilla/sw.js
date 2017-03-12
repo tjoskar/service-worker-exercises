@@ -57,7 +57,7 @@ self.addEventListener('sync', event => {
             return true;
         }
         const updateAndShowNotification = async () => {
-            await updateCache(`${location.origin}/${articleId}`);
+            await updateCache(`https://happy-news-nmnepmqeqo.now.sh/${articleId}`);
             await registration.showNotification('The article is ready for you', {
                 icon: 'icon.png',
                 body: 'View the article',

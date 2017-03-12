@@ -77,14 +77,14 @@ function isSameNewsList(a, b) {
 }
 
 async function fetchNews() {
-    const response = await fetch('https://happy-news-hcooumiahc.now.sh');
+    const response = await fetch('https://happy-news-nmnepmqeqo.now.sh');
     const newsList = await response.json();
     currentNewsList = newsList;
     return newsList;
 }
 
 async function detailNews(id) {
-    const response = await fetch(`https://happy-news-hcooumiahc.now.sh/${id}`);
+    const response = await fetch(`https://happy-news-nmnepmqeqo.now.sh/${id}`);
     return await response.json();
 }
 
