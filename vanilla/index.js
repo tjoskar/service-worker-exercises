@@ -95,7 +95,14 @@ async function newsList() {
 
 async function newsDetail(_, id) {
     try {
-        const news = await detailNews(id);
+        const newsFetch = detailNews(id);
+        const timeout = new Promise(resolve => setTimeout(resolve, 3000, new Error('timeout')));
+        const news = await Promise.race([newsFetch, timeout]).then(value => {
+            if (value instanceof Error) {
+                throw value;
+            }
+            return value;
+        });
         return createNewsNode(news);
     } catch (error) {
         if (await registerSync('news-article-' + id)) {
