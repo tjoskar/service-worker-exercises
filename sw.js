@@ -36,7 +36,7 @@ self.addEventListener('fetch', event => {
 
     if (url.hostname === 'i.redditmedia.com') {
         event.respondWith(cacheFallbackOnNetwork(event.request, imageCacheName));
-    } else if(url.hostname === 'happy-news-hcooumiahc.now.sh') {
+    } else if(url.hostname === 'happy-news-nmnepmqeqo.now.sh') {
         cacheAndUpdate(event, apiCacheName);
     } else if ([location.hostname, 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(url.hostname)) {
         event.respondWith(cacheFallbackOnNetwork(event.request, staticFilesCache));

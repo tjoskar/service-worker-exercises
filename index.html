@@ -7,14 +7,14 @@
   </head>
   <body>
     <header>
-        <h1><a href="/">Happy news</a></h1>
+        <h1><a href="./">Happy news</a></h1>
     </header>
     <div class="content"></div>
     <div id="confirm"></div>
     <script>
       // Place your service worker registration here
       window.navigator.serviceWorker
-        .register('/sw.js')
+        .register('sw.js')
         .then(reg => {
             console.log('We are live 🚀', reg);
             return reg;
