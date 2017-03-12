@@ -17,6 +17,8 @@ The possibilities are endless.
 
 > Make sure that you serving the site from the root. Meaning: you should visit the site by going to something like `http://localhost:8000/` and not by any sub folder like: `http://localhost:8000/service-worker-exercises/`
 
+.
+
 > You will only need to make changes in your sw.js file. Except for the registration part, which you will do in index.html
 
 # Step 1
@@ -388,7 +390,7 @@ And you should get a notification :tada:
 
 # Step 9
 
-Compare your sw.js file with mine. Did you do anything different? Tell me!
+Compare your sw.js file with [mine](https://github.com/tjoskar/service-worker-lab/blob/solution/sw.js). Did you do anything different? Tell me!
 
 # Step 10
 
