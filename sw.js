@@ -2,9 +2,9 @@ const staticFilesCache = 'static-files-v1';
 const apiCacheName = 'api-cache-v1';
 const imageCacheName = 'image-cache-v1';
 const staticFiles = [
-    '/',
-    '/index.js',
-    '/style.css',
+    './',
+    'index.js',
+    'style.css',
     'offline.gif',
     'https://fonts.googleapis.com/css?family=Open+Sans'
 ];
