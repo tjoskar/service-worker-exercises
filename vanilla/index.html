@@ -11,6 +11,19 @@
     </header>
     <div class="content"></div>
     <div id="confirm"></div>
+    <script>
+      // Place your service worker registration here
+      window.navigator.serviceWorker
+        .register('/sw.js')
+        .then(reg => {
+            console.log('We are live 🚀', reg);
+            return reg;
+        })
+        .catch(err => {
+            console.log('ಠ_ಠ', err);
+            throw err;
+        });
+    </script>
     <script type="text/javascript" src="index.js"></script>
   </body>
 </html>

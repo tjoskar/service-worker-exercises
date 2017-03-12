@@ -156,17 +156,6 @@ async function messageHandler({ type, url }) {
     }
 }
 
-function registerServiceWorker(path) {
-    return window.navigator.serviceWorker
-        .register(path)
-        .then(reg => {
-            console.log('We are live 🚀', reg);
-            return reg;
-        })
-        .catch(err => {
-            console.log('ಠ_ಠ', err);
-            throw err;
-        });
 }
 
 if ('serviceWorker' in window.navigator) {
