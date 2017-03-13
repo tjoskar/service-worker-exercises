@@ -34,7 +34,7 @@ We now need to register the service worker. Open up `index.html` in your favorit
 ```javascript
 if ('serviceWorker' in window.navigator) {
   window.navigator.serviceWorker
-    .register(‘/sw.js’)
+    .register('/sw.js')
     .then(reg => {
         console.log('We are live 🚀', reg);
         return reg;
@@ -44,7 +44,7 @@ if ('serviceWorker' in window.navigator) {
         throw err;
     }); 
 } else {
-  console.log(‘Your browser do not support Service Worker :/’)
+  console.log('Your browser do not support Service Worker :/')
 }
 ```
 
