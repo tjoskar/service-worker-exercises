@@ -127,7 +127,7 @@ __Bonus:__ The font from google is still out of reach though. You will need to u
 
 # Step 3 
 
-If you now uncheck the box for "Update on reload" and reload the page you may see that we have a problem. The browser will never re-fetch the static files again :screem: We will never download new versions of e.g. index.html. That’s because we only lookup the files from the cache and never do a fetch. The browser will however reload the cache if you make a change to the server worker (sw.js). Why?
+If you now uncheck the box for "Update on reload" and reload the page you may see that we have a problem. The browser will never re-fetch the static files again :scream: We will never download new versions of e.g. index.html. That’s because we only lookup the files from the cache and never do a fetch. The browser will however reload the cache if you make a change to the server worker (sw.js). Why?
 
 Let's fix this problem. Let's create a function that response with a value from cache and then tries to fetch a new value from the server and update the cache if it succeeds.
 
