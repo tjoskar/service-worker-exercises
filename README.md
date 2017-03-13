@@ -160,7 +160,7 @@ You should now see under the network tab that the service worker make new reques
 
 # Step 4
 
-It should be nice to get the news from `https://happy-news-hcooumiahc.now.sh/` even though you are on offline or on Lie-Fi.
+It should be nice to get the news from `https://happy-news-nmnepmqeqo.now.sh/` even though you are on offline or on Lie-Fi.
 
 Create a function that tries to fetch the resource from Internet and fall back on cache on failure.
 
