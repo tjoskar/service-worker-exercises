@@ -77,6 +77,7 @@ Refresh your browser and.. nothing will change... Why is that? If you take a loo
 The browser will download the new service worker and install it but the old one will still be running (activated) until you close the tab/window (for UX reasons). This sucks if you develop a new service worker and wants to get the latest service worker every time your refresh the page.
 
 Chrome comes to the rescue! If you check the box: `Update on reload` the browser will:
+
 1. Download the service worker
 2. Install it as a new version even if it's byte-identical
 3. Skip the waiting phase so the new service worker activates immediately, meaning the browser will emit a new `install` and `activate` event for every refresh
