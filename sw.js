@@ -85,7 +85,7 @@ self.addEventListener('push', function(event) {
 self.addEventListener('notificationclick', function(event) {
     // Assuming only one type of notification right now
     event.notification.close();
-    clients.openWindow(`${location.origin}/#news/${event.notification.data}`);
+    clients.openWindow(`${location.origin}/service-worker-exercises/#news/${event.notification.data}`);
 });
 
 function cacheAndUpdate(event, cacheName) {
